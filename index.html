@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Растрлық графика және Қабаттар: Интерактивті тапсырма (10 ұпай)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col items-center justify-between p-4 sm:p-6">
+
+    <!-- Header -->
+    <header class="w-full max-w-4xl text-center mb-6">
+        <span class="inline-block bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 text-xs font-semibold px-3 py-1 rounded-full mb-2">
+            Оқу мақсаты: 5.2.2.2 | Практикалық кейс-тапсырмалар (10 ұпай)
+        </span>
+        <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Графикалық дизайнер зертханасы: Қабаттар мен Құралдар</h1>
+        <p class="text-slate-400 text-sm mt-1">Шын өмірдегі графикалық тапсырмаларды шешу арқылы растрлық өңдеуді меңгеріңіз.</p>
+    </header>
+
+    <!-- Main Container -->
+    <main class="w-full max-w-4xl bg-slate-800 border border-slate-700/60 rounded-2xl shadow-2xl p-6 sm:p-8 flex flex-col gap-6">
+
+        <!-- STEP 0: Student Name Registration Form -->
+        <div id="register-screen" class="flex flex-col gap-6 py-4">
+            <div class="text-center space-y-2">
+                <h2 class="text-xl font-bold text-white">Дизайн тапсырмасына қош келдіңіз!</h2>
+                <p class="text-slate-400 text-sm">Тапсырманы орындау үшін аты-жөніңізді енгізіп, «Бастау» батырмасын басыңыз.</p>
+            </div>
+            <div class="max-w-md mx-auto w-full flex flex-col gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Оқушының аты-жөні:</label>
+                    <input type="text" id="student-name" placeholder="Мысалы: Жайнарбек Мұратұлы" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-emerald-500 text-base">
+                </div>
+                <button type="button" onclick="startQuiz()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl shadow-lg shadow-emerald-600/30 transition cursor-pointer">
+                    Бастау
+                </button>
+            </div>
+        </div>
+
+        <!-- QUIZ CONTAINER (Hidden initially) -->
+        <div id="quiz-container" class="hidden flex-col gap-6">
+            <!-- Stage Progress Indicator -->
+            <div class="flex items-center justify-between border-b border-slate-700 pb-4">
+                <div>
+                    <span id="step-counter" class="text-xs uppercase tracking-wider text-emerald-400 font-bold">Кейс 1 / 5</span>
+                    <h2 id="step-title" class="text-lg font-semibold text-white">Практикалық жағдаят</h2>
+                </div>
+                <div class="flex gap-1.5" id="dots"></div>
+            </div>
+
+            <!-- Dynamic Content Area -->
+            <div id="content-area" class="flex flex-col gap-6"></div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center pt-4 border-t border-slate-700">
+                <button type="button" id="prev-btn" onclick="prevStep()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 font-medium rounded-xl transition disabled:opacity-40 disabled:cursor-not-allowed">
+                    Артқа
+                </button>
+                <button type="button" id="next-btn" onclick="nextStep()" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded-xl shadow-lg shadow-emerald-600/30 transition cursor-pointer">
+                    Жалғастыру
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-6 text-center text-xs text-slate-500">
+        Функционалдық сауаттылыққа арналған интерактивті тапсырма &copy; 2026
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        let studentFullName = "";
+        const stepsData = [
+            {
+                title: "Кейс 1: Мектеп газетінің коллажы",
+                role: "Серік мектеп газетіне фотоколлаж дайындап жатыр.",
+                task: "Фонда мектептің суреті тұр. Оның үстіне оқушылардың суретін орналастырды. Бірақ оқушылардың артындағы ақ фон мектеп суретін жауып қалды. Серікке оқушылардың бейнесін фонда дәл қиып алып орналастыру үшін қандай құрал көмектеседі?",
+                options: [
+                    { id: 'a', text: "Ерекшелеу құралдары (Lasso немесе Magic Wand - Сиқырлы таяқша)", isCorrect: true, explain: "Дұрыс! Сиқырлы таяқша немесе Лассо құралы арқылы керекті нысанды дәл ерекшелеп, артық фонды жоюға болады." },
+                    { id: 'b', text: "Кадрлау құралы (Crop Tool)", isCorrect: false, explain: "Қате! Кадрлау бүкіл суреттің шеттерін кеседі, ортадағы нысанды бөлек ерекшелей алмайды." },
+                    { id: 'c', text: "Қылқалам құралы (Brush Tool)", isCorrect: false, explain: "Қате! Қылқалам тек сурет салуға арналған." }
+                ]
+            },
+            {
+                title: "Кейс 2: Постердегі элементтердің реті",
+                role: "Айша спорттық жарысқа арналған плакат жасауда.",
+                task: "Айша фоны бар қабаттың үстіне «ЖЕҢІС» деген мәтін жазды. Дегенмен, мәтін фоны бар суреттің артында қалып, көрінбей кетті. Айша бұл мәселені қабаттар панелінде қалай шешеді?",
+                options: [
+                    { id: 'a', text: "Мәтін жазылған қабатты (Layer) фондық қабаттың жоғары жағына сүйреп апарады.", isCorrect: true, explain: "Керемет! Қабаттар панелінде ең үстінде тұрған қабат бірінші болып көрінеді." },
+                    { id: 'b', text: "Суретті өшіріп, қайтадан бастайды.", isCorrect: false, explain: "Қате! Бұл уақытты босқа жұмсау, қабат орнын ауыстыру жеткілікті." },
+                    { id: 'c', text: "Мәтіннің шрифтін үлкейтеді.", isCorrect: false, explain: "Қате! Мәтін астыңғы қабатта тұрса, қанша үлкейтсе де көрінбейді." }
+                ]
+            },
+            {
+                title: "Кейс 3: Әлеуметтік желіге арналған аватар",
+                role: "Нұрлан суреттің өлшемін реттеп жатыр.",
+                task: "Нұрлан түсірген сурет өте кең, ал оған тек өзінің бет-әлпеті тұрған ортаңғы бөлігі ғана қажет. Суреттің артық төрт жағын кесіп тастап, тек керекті квадрат аумақты қалдыру үшін қай құралды қолданамыз?",
+                options: [
+                    { id: 'a', text: "Кадрлау құралы (Crop Tool)", isCorrect: true, explain: "Өте дұрыс! Кадрлау құралы кескіннің артық шеттерін кесіп алып тастауға арналған." },
+                    { id: 'b', text: "Жылжыту құралы (Move Tool)", isCorrect: false, explain: "Қате! Жылжыту құралы нысанды орнынан қозғалтады, бірақ шеттерін кеспейді." },
+                    { id: 'c', text: "Өшіргіш құралы (Eraser)", isCorrect: false, explain: "Қате! Өшіргіш суреттің пиксельдерін тазалайды, бірақ кенеп өлшемін қысқартпайды." }
+                ]
+            },
+            {
+                title: "Кейс 4: Киім дизайн жапсырмасы",
+                role: "Дизайнер жейдеге логотип орналастыруда.",
+                task: "Дизайнер жейденің суреті бар қабатқа логотипті әкелді. Енді ол логотипті жейденің он жақ кеуде тұсына дәл орналастыруы керек. Қай құралмен логотипті жылжытады?",
+                options: [
+                    { id: 'a', text: "Жылжыту құралы (Move Tool)", isCorrect: true, explain: "Дұрыс! Жылжыту құралы қабаттағы кез келген нысанның орнын ауыстыруға мүмкіндік береді." },
+                    { id: 'b', text: "Құю құралы (Paint Bucket)", isCorrect: false, explain: "Қате! Бұл құрал түсті бояуға арналған." },
+                    { id: 'c', text: "Масштабтау құралы (Zoom)", isCorrect: false, explain: "Қате! Бұл тек экранда жақындатып немесе алыстатып көрсетеді." }
+                ]
+            },
+            {
+                title: "Кейс 5: Көпқабатты жобаны түзету",
+                role: "Әлия 5 түрлі қабаты бар күрделі сурет жасады.",
+                task: "Әлия тек қана «Күн» бейнеленген қабаттың түсін өзгерткісі келеді. Бірақ ол фонды немесе басқа нысандарды бүлдіріп алғысы келмейді. Ол өңдеуді қалай жүргізуі керек?",
+                options: [
+                    { id: 'a', text: "Барлық қабаттарды біріктіріп (Merge layers), сосын бояйды.", isCorrect: false, explain: "Қате! Қабаттарды біріктірсе, басқа элементтер де қоса боялып кетеді." },
+                    { id: 'b', text: "Қабаттар панелінен тек «Күн» қабатын таңдап (активті етіп), соны ғана өңдейді.", isCorrect: true, explain: "Керемет! Жеке қабатпен жұмыс істегенде басқа қабаттарға ешқандай зақым келмейді." },
+                    { id: 'c', text: "Суретті сақтап, басынан қайта салады.", isCorrect: false, explain: "Қате! Қабатты жеке таңдау жеткілікті." }
+                ]
+            }
+        ];
+
+        let currentStep = 0;
+        let userAnswers = {};
+
+        function startQuiz() {
+            const nameInput = document.getElementById('student-name').value.trim();
+            if (!nameInput) {
+                alert("Өтінемін, аты-жөніңізді енгізіңіз!");
+                return;
+            }
+            studentFullName = nameInput;
+            
+            document.getElementById('register-screen').style.display = 'none';
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.style.display = 'flex';
+            
+            renderStep();
+        }
+
+        function renderDots() {
+            let dotsHtml = '';
+            for (let i = 0; i < stepsData.length; i++) {
+                let dotClass = "w-3 h-3 rounded-full transition-all ";
+                if (i === currentStep) {
+                    dotClass += "bg-emerald-500 scale-125";
+                } else if (userAnswers[i] !== undefined) {
+                    dotClass += "bg-indigo-500";
+                } else {
+                    dotClass += "bg-slate-600";
+                }
+                dotsHtml += `<span class="${dotClass}"></span>`;
+            }
+            document.getElementById('dots').innerHTML = dotsHtml;
+        }
+
+        function renderStep() {
+            const step = stepsData[currentStep];
+            document.getElementById('step-counter').textContent = `Кейс ${currentStep + 1} / ${stepsData.length}`;
+            document.getElementById('step-title').textContent = step.title;
+            renderDots();
+
+            let html = `
+                <div class="bg-slate-700/40 p-4 rounded-xl border border-slate-700 space-y-2">
+                    <p class="text-xs text-emerald-400 font-semibold uppercase tracking-wide">${step.role}</p>
+                    <p class="text-slate-200 text-base sm:text-lg leading-relaxed">${step.task}</p>
+                </div>
+                <div class="flex flex-col gap-3">
+            `;
+
+            step.options.forEach((opt) => {
+                const isSelected = userAnswers[currentStep] === opt.id;
+                html += `
+                    <div onclick="selectOption('${opt.id}')" class="flex flex-col p-4 rounded-xl border transition cursor-pointer bg-slate-700/20 border-slate-700 hover:bg-slate-700/50 ${isSelected ? 'border-emerald-500 bg-emerald-950/40 ring-1 ring-emerald-500' : ''}">
+                        <div class="flex items-start gap-3">
+                            <input type="radio" name="step-option" value="${opt.id}" ${isSelected ? 'checked' : ''} class="mt-1 text-emerald-600 focus:ring-emerald-500 bg-slate-900 border-slate-600 pointer-events-none">
+                            <span class="text-slate-200 text-sm sm:text-base select-none font-medium">${opt.text}</span>
+                        </div>
+                        ${isSelected ? `<p class="mt-2 text-xs text-emerald-300 pl-7 italic">${opt.explain}</p>` : ''}
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            document.getElementById('content-area').innerHTML = html;
+
+            document.getElementById('prev-btn').disabled = currentStep === 0;
+            document.getElementById('next-btn').textContent = currentStep === stepsData.length - 1 ? "Нәтижені көру (10 ұпай)" : "Жалғастыру";
+        }
+
+        function selectOption(id) {
+            userAnswers[currentStep] = id;
+            renderStep();
+        }
+
+        function nextStep() {
+            if (userAnswers[currentStep] === undefined) {
+                alert("Жалғастыру үшін нұсқалардың бірін таңдаңыз!");
+                return;
+            }
+
+            if (currentStep < stepsData.length - 1) {
+                currentStep++;
+                renderStep();
+            } else {
+                showResults();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                renderStep();
+            }
+        }
+
+        function showResults() {
+            let correctCount = 0;
+            stepsData.forEach((step, idx) => {
+                const chosenId = userAnswers[idx];
+                const chosenOpt = step.options.find(o => o.id === chosenId);
+                if (chosenOpt && chosenOpt.isCorrect) {
+                    correctCount++;
+                }
+            });
+
+            const totalScore = Math.round((correctCount / stepsData.length) * 10);
+            
+            let feedbackText = "";
+            let badgeColor = "";
+
+            if (totalScore >= 9) {
+                feedbackText = "Керемет сауаттылық! Сіз растрлық графикада қабаттар мен өңдеу құралдарын қашан және қалай дұрыс қолдану керектігін толық түсінген нағыз дизайнерсіз!";
+                badgeColor = "text-emerald-400 bg-emerald-950/40 border-emerald-500/30";
+            } else if (totalScore >= 6) {
+                feedbackText = "Жақсы нәтиже! Практикалық жағдайлардың көбін дұрыс шештіңіз, бірақ кейбір құралдардың (мысалы, ерекшелеу немесе қабат реті) қызметін қайталау қажет.";
+                badgeColor = "text-amber-400 bg-amber-950/40 border-amber-500/30";
+            } else {
+                feedbackText = "Әлі де жаттығу керек! Графикалық редактордағы құралдар мен қабаттардың атқаратын негізгі қызметін қайта оқып шығыңыз.";
+                badgeColor = "text-rose-400 bg-rose-950/40 border-rose-500/30";
+            }
+
+            let resultHtml = `
+                <div class="text-center py-6 flex flex-col items-center gap-4">
+                    <div class="bg-slate-900/60 border border-slate-700 px-6 py-3 rounded-xl w-full max-w-md text-left">
+                        <p class="text-xs text-slate-400 uppercase font-semibold">Оқушы:</p>
+                        <p class="text-lg font-bold text-white">${studentFullName}</p>
+                    </div>
+                    
+                    <div class="inline-block px-5 py-2 rounded-full border text-base font-bold ${badgeColor}">
+                        Жинаған ұпайыңыз: ${totalScore} / 10 ұпай (${correctCount} дұрыс шешім / ${stepsData.length})
+                    </div>
+                    
+                    <h2 class="text-2xl font-bold text-white">Практикалық тапсырма аяқталды!</h2>
+                    <p class="text-slate-300 max-w-lg text-sm sm:text-base leading-relaxed">${feedbackText}</p>
+                    
+                    <button type="button" onclick="location.reload()" class="mt-4 px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded-xl shadow-lg transition cursor-pointer">
+                        Тапсырманы қайта орындау
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('content-area').innerHTML = resultHtml;
+            document.getElementById('prev-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('step-counter').textContent = "Қорытынды баға";
+            document.getElementById('step-title').textContent = "Функционалдық сауаттылық нәтижесі";
+            document.getElementById('dots').innerHTML = '';
+        }
+    </script>
+</body>
+</html>
